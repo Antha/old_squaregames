@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>fancyBox - Fancy jQuery Lightbox Alternative | Demonstration</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="../style/taptap.css"/>
+</head>
+<body>
+
+	<!-- Add jQuery library -->
+	<script type="text/javascript" src="../lib/jquery.min.js"></script>
+	<script type="text/javascript">
+	var termoHeight = 250;
+	var fDescTermo;
+	var currentScore = 0;
+	$(document).ready(function(){
+		initializeComponent();
+		$("button.hint").click(function(){
+			if(termoHeight == 0){
+				alert("Maaf Waktu Habis");
+				return false;
+			}
+			termoHeight =  termoHeight + 15;
+			$(".termo").css("height", termoHeight+"px");
+			currentScore = currentScore + 10;
+			$(".score").html(currentScore);
+		});
+	});
+
+	function initializeComponent()
+	{
+		$("button.hint").prop('disabled',true);
+		$(".termo").css("height", termoHeight+"px");
+		$(".anime img").attr("src","../source/anime-stop.JPG");
+	}
+
+	function startGame(){
+		alert("Tekan Terus Tombol Merah Agar Indikator Tidak Turun. Jika sudah siap kelik OK");
+		termoHeight = 250;
+		$("button.hint").prop('disabled',false);
+		$("button[name=start]").hide();
+		$(".anime img").attr("src","../source/anime-cheer.gif");
+		fDescTermo = setInterval(descTermo,10);
+	}
+
+	function stopGame()
+	{
+		alert("Game Berakhir Waktu Habis, Skor Kamu "+currentScore);
+		clearInterval(fDescTermo);
+		currentScore = 0;
+		$(".score").html(currentScore);
+		$("button[name=start]").show();
+		$(".anime img").attr("src","../source/anime-stop.JPG");
+	}
+
+	function descTermo(){
+		if(termoHeight == 0){
+			stopGame();
+			return false;
+		}
+		termoHeight =  termoHeight - 1;
+		$(".termo").css("height", termoHeight+"px");
+		$(".termo").html(termoHeight);
+	}
+	</script>
+
+	<div class="container-main">
+	<div id="inline1 col-lg-12">
+		<h3 class="title">Tap Tap Game</h3>
+		<div class="container-start">
+			 Masukan Namamu <input type="text" name="player_name"/> <br/>
+			 <button onclick="startGame()" name="start">MULAI</button> <br/>
+			 <button onclick="highScore()" style="background: #ff864b;">HIGH SCORE</button>
+			 <div class="highscore"> Score Tertinggi : 10000(Hainun)</div>
+		</div>
+
+		<div class="container-score col-lg-12 col-md-12 col-xs-12">
+			<div class="col-lg-12 col-xs-12">
+			    <h4>Score:</h4>
+		        <div class="score">
+		        </div>
+		    </div>
+	    </div>
+
+		<div class="container-termo col-lg-6 col-md-6 col-xs-6">
+			<div class="col-lg-12 col-xs-12">
+				High
+			</div>
+		    <div class="termo col-lg-6 col-xs-12">
+		    </div>
+			<div class="col-lg-12 col-xs-12">
+				Low
+			</div>
+			<div class="caution col-lg-6 col-xs-12">
+				Tekan trus tombol agar indikator tidak turun ke bawah.
+				Jika Indikator Habis Maka Permainan Berakhir
+			</div>
+	    </div>
+
+		<div class="container-hint col-lg-6 col-md-6 col-xs-6">
+	  	    <button class="hint col-lg-12 col-xs-12">
+				Tekan Tekan !
+		    </button>
+			<div class="anime col-lg-12 col-xs-12">
+				<img src="../source/anime-cheer.gif" class="img-responsive"/>
+			</div>
+	    </div>
+	</div>
+    </div>
+
+</body>
+</html>
