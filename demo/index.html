@@ -44,12 +44,12 @@
 			return false;
 		}
 		$("button[name=start]").hide();
-		window.scrollTo(0,document.body.scrollHeight);
 		alert("Tombol - tombol Terletak Di Bagian Paling Bawah. Tekan Tombol Sesuai Warna Kotak");
 		stColorBox = setInterval(changeColorBox,1200);
 		buildChoose();
 		time = 5;
 		stTime = setInterval(startTime,1000);
+		$("html,body").animate({scrollTop:$(document).height()},1400);
 	}
 
 	function stopGame(){
