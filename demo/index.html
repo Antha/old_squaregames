@@ -3,54 +3,10 @@
 <head>
 	<title>fancyBox - Fancy jQuery Lightbox Alternative | Demonstration</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="../style/style.css"/>
 </head>
 <body>
-    <style type="text/css">
-	.fancybox-custom .fancybox-skin {
-		box-shadow: 0 0 50px #222;
-	}
-
-	body {
-		max-width: 700px;
-		margin: 0 auto;
-		font-family: arial;
-	}
-	h3
-	{
-		font-size: 32px;
-		font-family: arial;
-	}
-
-	.square
-	{
-		width: 200px;
-		height: auto;
-		position: relative;
-		display: block;
-		border: 1px black solid;
-		font-size: 34px;
-		font-family: arial;
-		font-weight: 700;
-		text-align: center;
-		padding:50px;
-		color: white;
-	}
-
-	.choose button
-	{
-		width: 100px;
-		margin: 10px 0;
-		padding: 7px;
-		background: #ffe8e8;
-		border: #f7b8b8 1px solid;
-	}
-
-	.score
-	{
-		font-size: 32px;
-		font-weight: 700;
-	}
-    </style>
 
 	<!-- Add jQuery library -->
 	<script type="text/javascript" src="../lib/jquery.min.js"></script>
@@ -59,6 +15,13 @@
 	var color = ["red","blue","yellow","pink","green"];
 	var curentColor;
 	var curentScore = 0;
+	var time;
+	var stColorBox,stTime;
+
+	function highScore()
+	{
+		window.location.href = "highScore.php";
+	}
 
 	function sresult(myindexcolor)
 	{
@@ -73,10 +36,55 @@
 	}
 
 	$(document).ready(function(){
-		setInterval(changeColorBox,1500);
-		buildChoose();
-
 	});
+
+	function startGame(){
+		if($("input[name=player_name]").val() == ""){
+			alert("Isi Namamu Dulu Dong !!!");
+			return false;
+		}
+		$("button[name=start]").hide();
+		window.scrollTo(0,document.body.scrollHeight);
+		alert("Tombol - tombol Terletak Di Bagian Paling Bawah. Tekan Tombol Sesuai Warna Kotak");
+		stColorBox = setInterval(changeColorBox,1200);
+		buildChoose();
+		time = 5;
+		stTime = setInterval(startTime,1000);
+	}
+
+	function stopGame(){
+		var message;
+		var playerName = $("input[name=player_name]").val();
+
+		clearInterval(stColorBox);
+		clearInterval(stTime);
+
+		message = "Selemat "+playerName+", Score Anda Adalah "+ curentScore;
+		$.ajax({
+			dataType:"json",
+			type:"POST",
+			url:"insertHighScore.php",
+			data:{name:playerName,score:curentScore},
+			success:function(res){
+
+			}
+		}
+		);
+
+		$("button[name=start]").show();
+		alert(message);
+		curentScore = 0;
+	}
+
+	function startTime()
+	{
+		$(".score").html(curentScore);
+		time = time - 1;
+		$(".time").html(time);
+		if(time == 0){
+			stopGame();
+		}
+	}
 
 	function changeColorBox()
 	{
@@ -85,43 +93,72 @@
 		curentColor = color[index];
 		$(".square").css("background-color",color[index]);
 		$(".square").css("color",color[indexLabel]);
-		$(".square").html(color[indexLabel]);
+		$(".square .title").html(color[indexLabel]);
 	}
 
 	function buildChoose()
 	{
 		var textButton = "";
 		for(var index = 0 ; index < color.length ; index++){
-		 	textButton = textButton + "<button onclick='sresult("+index+")' name='"+color[index]+"'>"+color[index]+"</button></br>";
+		 	textButton = textButton + "<button onclick='sresult("+index+")' name='"+color[index]+"'>"+color[index]+"</button>";
 		}
 		$(".choose").html(textButton);
 	}
 
 	function sresult(myindexcolor)
 	{
+		if(time == 0)
+		{
+			alert("Waktu Sudah Habis Wooi !!");
+			return false;
+		}
 		if(color[myindexcolor] == curentColor){
 			curentScore = curentScore + 10;
 		}
 		else {
 			curentScore = curentScore - 10;
 		}
-
 		$(".score").html(curentScore);
 	}
-
 	</script>
 
-	<div id="inline1">
-		<h3>Square Game</h3>
-		<h4>Score:</h4>
-		<div class="score">
+	<div class="container-main">
+	<div id="inline1 col-lg-12">
+		<h3 class="title">Square Game</h3>
+		<div class="container-start">
+			 Masukan Namamu <input type="text" name="player_name"/> <br/>
+			 <button onclick="startGame()" name="start">MULAI</button> <br/>
+			 <button onclick="highScore()" style="background: #ff864b;">HIGH SCORE</button>
 		</div>
-		<h4>Apa Warna Kotaknya ??</h4>
-		<div class="square">
-		</div>
-		<h4> Tekan Tombol Sesuai Warna Kotak</h4>
-		<div class="choose">
-		</div>
+
+		<div class="container-score col-lg-12 col-md-12 col-xs-12">
+			<div class="col-lg-6 col-xs-12">
+			    <h4>Score:</h4>
+		        <div class="score">
+		        </div>
+		    </div>
+			<div class="col-lg-6 col-xs-12">
+			    <h4>Time:</h4>
+		        <div class="time">
+		        </div>
+		    </div>
+	    </div>
+
+		<div class="container-square col-lg-6 col-md-6 col-xs-12">
+		    <h4>Apa Warna Kotaknya ??</h4>
+		    <div class="square">
+				<div class="title">
+				</div>
+		    </div>
+	    </div>
+
+		<div class="container-square col-lg-6 col-md-6 col-xs-12">
+		    <h4> Tekan Tombol Sesuai Warna Kotak</h4>
+	  	    <div class="choose">
+		    </div>
+	    </div>
 	</div>
+    </div>
+
 </body>
 </html>
