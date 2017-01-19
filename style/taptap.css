@@ -26,6 +26,10 @@ h3
     font-family: arial;
 }
 
+.container-start .highscore{
+    font-size: 23px;
+    font-weight: 700;
+}
 
 .score,.time
 {
