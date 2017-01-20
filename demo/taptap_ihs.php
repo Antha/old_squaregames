@@ -1,5 +1,5 @@
 <?php
-$connect = mysqli_connect("localhost","root","","squaregame");
+$connect = mysqli_connect("mysql.idhostinger.com","u880626497_zen","amandarv","u880626497_squar");
 
 if(mysqli_connect_errno())
 {
