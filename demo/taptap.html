@@ -19,10 +19,6 @@
 		highestScore();
 		initializeComponent();
 		$("button.hint").click(function(){
-			if(termoHeight == 0){
-				alert("Maaf Waktu Habis");
-				return false;
-			}
 			termoHeight =  termoHeight + 15;
 			$(".termo").css("height", termoHeight+"px");
 			currentScore = currentScore + 10;
@@ -61,7 +57,8 @@
 		$("button.hint").prop('disabled',false);
 		$("button[name=start]").hide();
 		$(".anime img").attr("src","../source/anime-cheer.gif");
-		fDescTermo = setInterval(descTermo,10);
+		fDescTermo = setInterval(descTermo,18);
+		$("html,body").animate({scrollTop:$(document).height()},1400);
 	}
 
 	function stopGame()
@@ -70,11 +67,14 @@
 		clearInterval(fDescTermo);
 		$(".score").html(currentScore);
 		$("button[name=start]").show();
+		$("button.hint").prop('disabled',true);
 		$(".anime img").attr("src","../source/anime-stop.JPG");
+		$(".termo").css("background","green");
 		termoHeight = 250;
 		$(".termo").css("height", termoHeight+"px");
 		inputData();
 		currentScore = 0;
+		window.location.reload(true);
 	}
 
 	function inputData(){
@@ -89,13 +89,34 @@
 	}
 
 	function descTermo(){
-		if(termoHeight == 0){
+		if(termoHeight < 0 || termoHeight > 250){
 			stopGame();
 			return false;
+		}
+		if(termoHeight >= 150 || termoHeight <= 50)
+		{
+			$(".termo").css("background","red");
+		}
+		else {
+			$(".termo").css("background","green");
 		}
 		termoHeight =  termoHeight - 2;
 		$(".termo").css("height", termoHeight+"px");
 		$(".termo").html(termoHeight);
+	}
+
+	function highScore()
+	{
+		window.location.href = "taptap_highscore.php";
+	}
+
+	function cekname(cekpnm)
+	{
+		if(cekpnm.length > 10)
+		{
+			alert("Panjang Nama Maksimal 10 Karakter");
+			$("input[name='player_name']").val("");
+		}
 	}
 	</script>
 
@@ -103,7 +124,7 @@
 	<div id="inline1 col-lg-12">
 		<h3 class="title">Tap Tap Game</h3>
 		<div class="container-start">
-			 Masukan Namamu <input type="text" name="player_name"/> <br/>
+			 Masukan Namamu <input type="text" name="player_name" onkeyup="cekname(this.value)"/> <br/>
 			 <button onclick="startGame()" name="start">MULAI</button> <br/>
 			 <button onclick="highScore()" style="background: #ff864b;">HIGH SCORE</button>
 			 <div class="highscore"> Score Tertinggi : <value>10000(Hainun)</value></div>
@@ -114,6 +135,9 @@
 			    <h4>Score:</h4>
 		        <div class="score">
 		        </div>
+				<div style="color:red; margin:10px 0">
+				    Jangan Sampai Angka Pada Indikator Mencapai 250 atau 0.Karena Permainan Akan Berakhir.
+			    </div>
 		    </div>
 	    </div>
 
