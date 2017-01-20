@@ -1,6 +1,6 @@
 <?php
 
-$connect = mysqli_connect("localhost","root","","squaregame");
+$connect = mysqli_connect("mysql.idhostinger.com","u880626497_zen","amandarv","u880626497_squar");
 
 $qhigest_score = mysqli_query($connect,"Select * From taptap_high_score order By SKOR Desc limit 1");
 
