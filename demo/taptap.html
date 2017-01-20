@@ -15,7 +15,9 @@
 	var termoHeight = 250;
 	var fDescTermo;
 	var currentScore = 0;
+	var player_name;
 	$(document).ready(function(){
+		highestScore();
 		initializeComponent();
 		$("button.hint").click(function(){
 			if(termoHeight == 0){
@@ -27,6 +29,7 @@
 			currentScore = currentScore + 10;
 			$(".score").html(currentScore);
 		});
+		setInterval(highestScore,1000);
 	});
 
 	function initializeComponent()
@@ -36,8 +39,25 @@
 		$(".anime img").attr("src","../source/anime-stop.JPG");
 	}
 
+	function highestScore(){
+		var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                $(".highscore value").html(this.responseText);
+            }
+        };
+        xmlhttp.open("GET", "taptap_hs.php");
+        xmlhttp.send();
+	}
+
 	function startGame(){
+		if($("input[name=player_name]").val() == "")
+		{
+			alert("Isi Nama Dulu Dong");
+			return false;
+		}
 		alert("Tekan Terus Tombol Merah Agar Indikator Tidak Turun. Jika sudah siap kelik OK");
+		player_name = $("input[name=player_name]").val();
 		termoHeight = 250;
 		$("button.hint").prop('disabled',false);
 		$("button[name=start]").hide();
@@ -47,12 +67,26 @@
 
 	function stopGame()
 	{
-		alert("Game Berakhir Waktu Habis, Skor Kamu "+currentScore);
+     	alert("Game Berakhir Waktu Habis, Skor "+ player_name +" "+ currentScore);
 		clearInterval(fDescTermo);
-		currentScore = 0;
 		$(".score").html(currentScore);
 		$("button[name=start]").show();
 		$(".anime img").attr("src","../source/anime-stop.JPG");
+		termoHeight = 250;
+		$(".termo").css("height", termoHeight+"px");
+		inputData();
+		currentScore = 0;
+	}
+
+	function inputData(){
+		$.ajax({
+			dataType:"json",
+			type:"POST",
+			url:"taptap_ihs.php",
+			data:{name:player_name,score:currentScore},
+			success:function(res){
+			}
+		});
 	}
 
 	function descTermo(){
@@ -60,7 +94,7 @@
 			stopGame();
 			return false;
 		}
-		termoHeight =  termoHeight - 1;
+		termoHeight =  termoHeight - 2;
 		$(".termo").css("height", termoHeight+"px");
 		$(".termo").html(termoHeight);
 	}
@@ -73,7 +107,7 @@
 			 Masukan Namamu <input type="text" name="player_name"/> <br/>
 			 <button onclick="startGame()" name="start">MULAI</button> <br/>
 			 <button onclick="highScore()" style="background: #ff864b;">HIGH SCORE</button>
-			 <div class="highscore"> Score Tertinggi : 10000(Hainun)</div>
+			 <div class="highscore"> Score Tertinggi : <value>10000(Hainun)</value></div>
 		</div>
 
 		<div class="container-score col-lg-12 col-md-12 col-xs-12">

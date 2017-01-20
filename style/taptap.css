@@ -79,6 +79,7 @@ h3
     width: 25px;
     background-color: green;
     position: relative;
+    color: white !important;
 }
 
 .container-termo .caution{
